@@ -184,10 +184,13 @@ function getSecureMalloc(macho: MachOParsed): false | string {
 
 const CPU_SUBTYPE_ARM64E = 2;
 const CPU_SUBTYPE_MASK = 0x00ffffff;
+const CPU_SUBTYPE_PTRAUTH_ABI = 0x80000000;
+const CPU_SUBTYPE_ARM64_PTR_AUTH_MASK = 0x0f000000;
 
 function getPAC(macho: MachOParsed): false | string {
   if (Process.arch !== "arm64") return false;
-  const arm64e = (macho.cpusubtype & CPU_SUBTYPE_MASK) === CPU_SUBTYPE_ARM64E;
+  const sub = macho.cpusubtype;
+  const arm64e = (sub & CPU_SUBTYPE_MASK) === CPU_SUBTYPE_ARM64E;
   const authSections = new Set(["__auth_stubs", "__auth_got", "__auth_ptr"]);
   const found: string[] = [];
   for (const sect of macho.sections) {
@@ -195,10 +198,19 @@ function getPAC(macho: MachOParsed): false | string {
       found.push(sect.name);
     }
   }
-  if (arm64e && found.length > 0) return `arm64e (${found.join(", ")})`;
-  if (arm64e) return "arm64e";
-  if (found.length > 0) return found.join(", ");
-  return false;
+  if (!arm64e && found.length === 0) return false;
+  if (!arm64e) return found.join(", ");
+
+  const parts: string[] = ["arm64e"];
+  const versioned = sub & CPU_SUBTYPE_PTRAUTH_ABI;
+  if (versioned) {
+    const paVer = (sub & CPU_SUBTYPE_ARM64_PTR_AUTH_MASK) >>> 24;
+    parts.push(`ptrauth v${paVer}`);
+  } else {
+    parts.push("unversioned");
+  }
+  if (found.length > 0) parts.push(found.join(", "));
+  return `${parts[0]} (${parts.slice(1).join(", ")})`;
 }
 
 export default function checksec(mod: Module): MachOResult {
