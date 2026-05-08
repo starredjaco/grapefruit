@@ -120,6 +120,7 @@ Command-line flags take precedence over environment variables when both are set.
 
 ## Documentation
 
+- [CLI and Daemon](docs/cli.md)
 - [Development](docs/dev.md)
 - [Architecture](docs/arch.md)
 - [RPC](docs/rpc.md)
