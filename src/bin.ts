@@ -2,6 +2,37 @@ import { parseArgs } from "node:util";
 import { schema } from "./lib/cli.ts";
 
 const cliCommands = ["version", "device", "log", "history", "agent", "setup"];
+const ctlCommands = ["daemon", "rpc", "session"];
+
+function command(argv: string[]): string | undefined {
+  const valueOpts = new Set([
+    "-L",
+    "--label",
+    "-s",
+    "--session",
+    "-d",
+    "--device",
+    "--platform",
+    "-b",
+    "--bundle",
+    "--pid",
+    "-n",
+    "--name",
+    "--frida",
+    "--host",
+    "--port",
+    "--project",
+  ]);
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--") return argv[i + 1];
+    if (!arg.startsWith("-")) return arg;
+
+    const name = arg.includes("=") ? arg.slice(0, arg.indexOf("=")) : arg;
+    if (valueOpts.has(name) && !arg.includes("=")) i++;
+  }
+}
 
 const args = parseArgs(schema);
 
@@ -23,6 +54,8 @@ Server Options:
   --help, -h             Show this help message
 
 CLI Commands:
+  rpc                    Attach/create a daemon session and call agent RPC
+  session                Manage daemon-owned instrumentation sessions
   version                Show Frida & IGF versions
   device <subcommand>    Device management (list|apps|ps|info|kill)
   log <subcommand>       Log management (hooks|crypto|syslog|agent|clear)
@@ -35,9 +68,11 @@ Run 'igf <command> --help' for command details.
   process.exit(0);
 }
 
-const firstArg = args.positionals[0];
+const firstArg = command(process.argv.slice(2));
 
-if (firstArg && cliCommands.includes(firstArg)) {
+if (firstArg && ctlCommands.includes(firstArg)) {
+  import("./ctl.ts").then((m) => m.run(process.argv.slice(2)));
+} else if (firstArg && cliCommands.includes(firstArg)) {
   import("./cli/commands.ts").then((m) => m.runCLI(process.argv.slice(2)));
 } else {
   import("./index.ts");
