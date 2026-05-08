@@ -45,8 +45,8 @@ Like tmux, multiple daemon instances can be selected by label:
 
 ```sh
 igf -L default session ls
-igf -L audit rpc --device <udid> --platform ios --bundle com.example.app fs.roots
-igf -L audit daemon stop
+igf -L mastg rpc --device <udid> --platform ios --bundle com.example.app fs.roots
+igf -L mastg daemon stop
 ```
 
 If the selected daemon is not running, the CLI starts it automatically.

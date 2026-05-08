@@ -51,7 +51,7 @@ igf setup - Install Claude Code skills
 Usage:
   igf setup [options]
 
-Installs /igf and /audit skills for Claude Code into the current
+Installs /igf and /mastg skills for Claude Code into the current
 project's .claude/skills/ directory.
 
 Options:
@@ -79,5 +79,5 @@ Options:
   }
 
   console.log(`\n${found.size} skill(s) installed to ${label}`);
-  console.log("Use /igf and /audit in Claude Code.");
+  console.log("Use /igf and /mastg in Claude Code.");
 }

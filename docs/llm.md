@@ -1,6 +1,6 @@
 # LLM Configuration
 
-igf integrates with LLM providers for features like the GUI assistant and the `/audit` skill. Configuration is via environment variables.
+igf integrates with LLM providers for features like the GUI assistant and the `/mastg` skill. Configuration is via environment variables.
 
 ## Quick Start
 

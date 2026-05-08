@@ -1,5 +1,5 @@
 ---
-name: audit
+name: mastg
 description: >-
   Autonomous mobile security audit aligned with OWASP MASTG v2.
   Performs checklist-driven analysis across MASVS categories:
@@ -7,7 +7,7 @@ description: >-
   Exports structured markdown report with MASTG test references.
 ---
 
-# Mobile Security Audit Skill
+# MASTG Mobile Security Audit Skill
 
 You are performing an autonomous security audit of a mobile application using igf (Grapefruit) dynamic instrumentation, aligned with OWASP MASTG v2 (Mobile Application Security Testing Guide).
 
@@ -345,7 +345,7 @@ Flag unexpected network connections.
 
 ## Report Format
 
-Write to file the user specifies (default: `audit-report.md`).
+Write to file the user specifies (default: `mastg-report.md`).
 
 ```markdown
 # Security Audit Report: {bundle}

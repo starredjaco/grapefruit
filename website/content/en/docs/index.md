@@ -27,7 +27,7 @@ igf setup           # install to .claude/skills/ in current project
 igf setup --global  # install to ~/.claude/skills/ (available in all projects)
 ```
 
-After installation, use `/igf` in Claude Code to interact with the IGF server, or `/audit` for autonomous mobile security audits aligned with OWASP MASTG.
+After installation, use `/igf` in Claude Code to interact with the IGF server, or `/mastg` for autonomous mobile security audits aligned with OWASP MASTG.
 
 ## Feature Guide
 

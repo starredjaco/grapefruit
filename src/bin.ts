@@ -55,7 +55,7 @@ Server Options:
 CLI Commands:
   rpc                    Attach/create a daemon session and call agent RPC
   session                Manage daemon-owned instrumentation sessions
-  setup                  Install Claude Code skills (/igf, /audit)
+  setup                  Install Claude Code skills (/igf, /mastg)
 
 Run 'igf <command> --help' for command details.
 `);

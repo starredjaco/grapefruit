@@ -27,7 +27,7 @@ igf setup           # 安装到当前项目的 .claude/skills/
 igf setup --global  # 安装到 ~/.claude/skills/（所有项目可用）
 ```
 
-安装后，在 Claude Code 中使用 `/igf` 与 IGF 服务器交互，使用 `/audit` 进行自主移动安全审计（遵循 OWASP MASTG v2）。
+安装后，在 Claude Code 中使用 `/igf` 与 IGF 服务器交互，使用 `/mastg` 进行自主移动安全审计（遵循 OWASP MASTG v2）。
 
 ## 功能索引
 
