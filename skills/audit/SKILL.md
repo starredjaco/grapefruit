@@ -35,7 +35,7 @@ SESSION="-d $DEVICE --platform $PLATFORM -b $BUNDLE"
 Use `igf` CLI via bash. The `/igf` skill documents all commands.
 
 **Rules:**
-- Ask user before starting hooks (`hook start`, `crypto start`)
+- Ask user before starting monitors or hooks (`pin start`, `hook start`)
 - Ask user before accessing paths outside app data directory
 - If a command fails, note the error and move on
 - Collect actual output as evidence for each finding
@@ -52,8 +52,11 @@ Platform: [A] = Android, [I] = iOS, [*] = both.
 ### 1. MASVS-STORAGE — Data Storage & Privacy
 
 **Collect app info and filesystem roots:**
+Run the platform-specific app metadata command plus the shared process/filesystem commands:
 ```sh
-igf agent app info $SESSION
+igf agent app process-info $SESSION
+igf agent app info $SESSION      # Android
+igf agent app plist $SESSION     # iOS
 igf agent fs roots $SESSION
 ```
 
@@ -132,11 +135,10 @@ igf agent fs roots $SESSION
 
 **Runtime crypto monitoring (ask user first):**
 ```sh
-igf agent crypto start cipher $SESSION    # Android
-igf agent crypto start cccrypt $SESSION   # iOS
+igf agent pin start crypto $SESSION
 # wait for app interaction...
 igf log crypto $DEVICE $BUNDLE --limit 100
-igf agent crypto stop cipher $SESSION
+igf agent pin stop crypto $SESSION
 ```
 
 ### 3. MASVS-NETWORK — Network Communication
@@ -174,13 +176,17 @@ igf agent crypto stop cipher $SESSION
 - Flag: no pinning (MEDIUM for L2)
 
 **Runtime HTTP monitoring (ask user first):**
+Run the capture pin for the target platform:
 ```sh
-igf agent hook start http $SESSION        # Android
-igf agent hook start sslpinning $SESSION  # Android pinning bypass
+igf agent pin start http $SESSION         # Android HTTP/WebSocket capture
+igf agent pin start nsurl $SESSION        # iOS NSURLSession/WebSocket capture
+igf agent pin start sslpinning $SESSION   # Android TLS validation monitoring
 # wait for app interaction...
 igf history http $DEVICE $BUNDLE --limit 100   # Android
 igf history nsurl $DEVICE $BUNDLE --limit 100  # iOS
-igf agent hook stop http $SESSION
+igf agent pin stop http $SESSION
+igf agent pin stop nsurl $SESSION
+igf agent pin stop sslpinning $SESSION
 ```
 Flag: plaintext requests, API keys in headers/URLs, sensitive data in transit
 
@@ -290,10 +296,10 @@ igf agent checksec main $SESSION
 
 **Runtime privacy monitoring (ask user first):**
 ```sh
-igf agent hook start privacy $SESSION
+igf agent pin start privacy $SESSION
 # wait for app interaction...
 igf history privacy $DEVICE $BUNDLE --limit 100
-igf agent hook stop privacy $SESSION
+igf agent pin stop privacy $SESSION
 ```
 Categorize: microphone, camera, photos, sensors, bluetooth, wifi, location, health
 
@@ -322,9 +328,10 @@ Also check:
 
 Stop all active hooks:
 ```sh
+igf agent pin list $SESSION
+igf agent pin stop <id> $SESSION   # for each active pin
 igf agent hook status $SESSION
-igf agent hook stop <group> $SESSION   # for each active group
-igf agent crypto stop <group> $SESSION
+igf agent hook stop <group> $SESSION   # for low-level hook groups, if used
 ```
 
 ## Open Files / Network

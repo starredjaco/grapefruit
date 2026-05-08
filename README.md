@@ -7,7 +7,7 @@
 [![John Discord](https://discord.com/api/guilds/591601634266578944/embed.png)](https://discord.com/invite/pwutZNx)
 [![npm version](https://img.shields.io/npm/v/igf?color=blue)](https://www.npmjs.com/package/igf)
 [![Commits](https://img.shields.io/github/commit-activity/w/chichou/grapefruit?label=Commits)](https://github.com/ChiChou/Grapefruit/commits/master)
-[![contributers](https://img.shields.io/github/contributors/chichou/grapefruit)](https://github.com/ChiChou/Grapefruit/graphs/contributors)
+[![contributors](https://img.shields.io/github/contributors/chichou/grapefruit)](https://github.com/ChiChou/Grapefruit/graphs/contributors)
 [![License](https://img.shields.io/github/license/chichou/grapefruit)](https://github.com/ChiChou/Grapefruit/blob/master/LICENSE)
 
 Runtime mobile application instrumentation toolkit powered by [Frida](https://frida.re).
@@ -19,14 +19,14 @@ Now it supports both iOS and Android!
 
 Requires [Frida](https://frida.re) server running on your device. Follow the [official setup guides](https://frida.re/docs/ios/)([Android](https://frida.re/docs/android/)) first.
 
-**npm (recommended)**
+**npm (recommended, requires Node.js 22.18+)**
 
 ```sh
 npm install -g igf
 igf
 ```
 
-**Or run without installing**
+**Or run without installing (requires Node.js 22.18+)**
 
 ```sh
 npx igf
@@ -34,8 +34,7 @@ npx igf
 
 **Prebuilt binaries** for macOS, Linux, and Windows are available on [GitHub Releases](https://github.com/chichou/grapefruit/releases).
 
-Note: even we use `bun` as primary development environment, and the prebuilt single binaries are bun based,
-the package on npm is not compatible with bun, do not use `bunx` to run.
+Note: Bun is the primary development environment and the prebuilt single binaries are Bun-based, but the npm package is built for Node.js. Do not use `bunx` to run it.
 
 ## Usage
 

@@ -18,7 +18,7 @@
 
 **HTTP（Android）**：拦截来自 OkHttp 等常见客户端的 HTTP 流量。查看带请求头和正文的请求和响应。
 
-> **注意**：HTTP 监控基于 Hook 实现。详见[已知限制](/docs/limits#http-monitoring-is-hook-based)。
+> **注意**：HTTP 监控基于 Hook 实现。详见[已知限制](/cn/docs/limits#http-监控基于-hook)。
 
 ## 加密监控
 
@@ -26,7 +26,7 @@
 
 ## 隐私监控
 
-跟踪对敏感 API 的访问——位置、联系人、照片、相机、麦克风、剪贴板等。查看哪些代码路径触发隐私敏感操作。
+跟踪对敏感 API 的访问——位置、照片、相机、麦克风、健康、传感器、蓝牙、Wi-Fi 等。查看哪些代码路径触发隐私敏感操作。
 
 ## Binary Cookies（iOS）
 

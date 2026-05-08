@@ -8,7 +8,7 @@ Grapefruit is a runtime mobile security research toolkit for iOS and Android. It
 npx igf
 ```
 
-Then visit the URL shown in your terminal. For prebuilt binaries and other options, see the [installation guide](/docs/install).
+Then visit the URL shown in your terminal. This requires Node.js 22.18 or newer. For prebuilt binaries and other options, see the [installation guide](/docs/install).
 
 ## Why Grapefruit?
 
@@ -49,9 +49,11 @@ Grapefruit runs as a local server with three components:
 
 ## Requirements
 
-- Node.js 22+ or Bun 1.3.6+
+- Node.js 22.18+ for npm/npx, or a prebuilt binary with no runtime dependency
+- Bun for source development
 - A target device with Frida support (see below)
 - Frida server running on the target device
+- Optional: LLM API key for AI decompilation — see [LLM Configuration](/docs/llm)
 
 ### Supported Environments
 
@@ -64,4 +66,3 @@ Grapefruit runs as a local server with three components:
 | Non-rooted Android | Use Frida Gadget or a debuggable APK |
 
 > Jailbroken/rooted devices provide the best experience. Simulator and Gadget modes work but are less battle-tested.
-- Optional: LLM API key for AI decompilation — see [LLM Configuration](/docs/llm)

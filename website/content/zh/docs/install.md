@@ -2,7 +2,7 @@
 
 ## npm（推荐）
 
-使用 npm 全局安装。需要 Node.js 22+ 或 Bun 1.3.6+。
+使用 npm 全局安装。需要 Node.js 22.18 或更高版本。
 
 ```
 npm install -g igf
@@ -13,6 +13,8 @@ npm install -g igf
 ```
 igf
 ```
+
+不要使用 `bunx igf`；npm 包面向 Node.js 运行。
 
 ## 预编译二进制
 
@@ -86,4 +88,4 @@ FRIDA_VERSION=16 igf
 
 > **注意：** Frida 16 的支持测试覆盖较少，可能在新版操作系统上遇到兼容性问题，且缺少仅在 Frida 17 中提供的新功能。建议尽早升级到 Frida 17。
 
-如需 AI 反编译功能，参见 [LLM 配置](/docs/llm)。
+如需 AI 反编译功能，参见 [LLM 配置](/cn/docs/llm)。

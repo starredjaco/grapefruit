@@ -26,7 +26,7 @@ Intercept cryptographic operations (AES, RSA, HMAC, etc.) in real time. View the
 
 ## Privacy Monitor
 
-Track access to sensitive APIs — location, contacts, photos, camera, microphone, clipboard, and more. See which code paths trigger privacy-sensitive operations.
+Track access to sensitive APIs — location, photos, camera, microphone, health, sensors, Bluetooth, Wi-Fi, and more. See which code paths trigger privacy-sensitive operations.
 
 ## Binary Cookies (iOS)
 

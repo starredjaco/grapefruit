@@ -26,7 +26,7 @@ All code changes must pass the relevant checks before committing.
 
 ```sh
 cd agent && bun run build    # full build (agents + types)
-cd agent && bun run type     # type-check only (droid + fruity)
+cd agent && bun run type     # generate/check agent types
 ```
 
 ### gui/ (frontend)

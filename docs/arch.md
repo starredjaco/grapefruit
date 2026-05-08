@@ -68,8 +68,12 @@ Each store class follows a consistent pattern: `append()`, `query()`, `count()`,
 | `HookStore`    | SQLite         | ObjC/native method hook logs                  |
 | `CryptoStore`  | SQLite         | Cryptographic API interception logs           |
 | `NSURLStore`   | SQLite + files | HTTP/HTTPS request logs with body attachments |
+| `HttpStore`    | SQLite + files | Android HTTP/WebSocket request logs with body attachments |
 | `FlutterStore` | SQLite         | Flutter method channel events                 |
 | `JNIStore`     | SQLite         | Android JNI call traces                       |
+| `XPCStore`     | SQLite         | iOS XPC/NSXPC message traces                  |
+| `PrivacyStore` | SQLite         | Sensitive API access logs                     |
+| `HermesStore`  | SQLite         | Captured Hermes bytecode blobs                |
 | `PinStore`     | File system    | Hook rule snapshots for persistence           |
 | `LogWriter`    | File system    | Syslog and agent log streaming                |
 
@@ -99,7 +103,7 @@ The frontend creates a proxy-based RPC client (`gui/src/lib/rpc.ts`) that:
 - Returns typed promises matching the agent's exported interfaces
 - Rejects pending calls on disconnect
 
-TanStack Query hooks (`useRpcQuery`, `useDroidRpcQuery`, etc.) wrap RPC calls with caching, refetching, and error handling.
+TanStack Query hooks (`useFruityQuery`, `useDroidQuery`, and `usePlatformQuery`) wrap RPC calls with caching, refetching, and error handling.
 
 ## Agent
 
@@ -150,11 +154,10 @@ Bridge scripts (Java, ObjC, Swift) are downloaded from PyPI packages and stored 
 
 The `scripts/build-bun.ts` script:
 
-1. Builds the GUI (`gui/dist/`)
-2. Builds the agent (`agent/dist/`)
-3. Packs GUI, agent, and Drizzle migrations into `assets.tgz`
-4. Prebuilds native Frida modules for target platforms
-5. Compiles to standalone binary via `bun build --compile --target=<platform>`
+1. Fetches the radare2 WASM asset
+2. Packs existing GUI, agent, Drizzle migrations, and skills into `assets.tgz`
+3. Prebuilds native Frida modules for target platforms
+4. Compiles to standalone binary via `bun build --compile --target=<platform>`
 
 At runtime, embedded assets are extracted from the tarball (`src/lib/assets.ts`).
 

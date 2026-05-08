@@ -59,9 +59,6 @@ LLM_BASE_URL=https://api.fireworks.ai/inference LLM_API_KEY=... LLM_MODEL=accoun
 
 # LM Studio (local)
 LLM_BASE_URL=http://localhost:1234/v1 LLM_MODEL=local-model
-
-# Azure OpenAI
-LLM_BASE_URL=https://your-resource.openai.azure.com/openai/deployments/your-deployment LLM_API_KEY=... LLM_MODEL=gpt-4o
 ```
 
 ## Format Resolution
@@ -72,7 +69,7 @@ The request/response format is determined automatically:
 2. `LLM_PROVIDER=gemini` → Google Gemini format
 3. Everything else (including custom `LLM_BASE_URL`) → OpenAI Chat Completions format
 
-## API Endpoint
+## API Endpoints
 
 The server exposes `POST /api/llm` which accepts a plain text body and returns the LLM response as plain text. This is used by the GUI for inline analysis features.
 
@@ -81,3 +78,5 @@ curl -X POST http://localhost:31337/api/llm \
   -H "Content-Type: text/plain" \
   -d "Explain what this class does: NSURLSession"
 ```
+
+For streaming responses, use `POST /api/llm/stream` with the same plain text request body.

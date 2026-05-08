@@ -4,7 +4,7 @@
 
 - [Bun](https://bun.sh/) (primary runtime, recommended)
 - Node.js >= 22.18.0 (alternative runtime for npm package)
-- [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) (for `r2hermes.wasm` — run `bun externals/radare/r2hermes.wasm/setup-wasi-sdk.ts` to install)
+- [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) (optional, for building `r2hermes.wasm`)
 - A device running [frida-server](https://frida.re/docs/installation/) connected via USB or network
 - iOS or Android target device/emulator
 
@@ -15,14 +15,19 @@
 git clone https://github.com/chichou/grapefruit.git
 cd grapefruit
 
-# Build r2hermes.wasm first (requires wasi-sdk)
-bun externals/radare/r2hermes.wasm/build.ts
-
-# Install all dependencies (root + agent + gui)
-bun install
+# Install all dependencies, initialize submodules, fetch/build WASM assets
+bun run setup
 ```
 
-Each workspace has its own `package.json`. The root `prepare` script handles building the agent and GUI automatically after install.
+Each workspace has its own `package.json`. The root `setup` script installs dependencies for the root, `agent/`, and `gui/`, fetches the radare2 WASM asset, and builds `r2hermes.wasm` when wasi-sdk is available.
+
+If the `r2hermes.wasm` step is skipped because wasi-sdk is missing, the Hermes bytecode decompiler will be unavailable until you run:
+
+```bash
+cd externals/radare/r2hermes.wasm
+bun run setup
+bun run build
+```
 
 ## Available Scripts
 
@@ -30,7 +35,9 @@ Each workspace has its own `package.json`. The root `prepare` script handles bui
 
 | Script                       | Description                                   |
 | ---------------------------- | --------------------------------------------- |
-| `bun run dev:all`           | Start backend + frontend dev servers together |
+| `bun run setup`              | Install deps, initialize submodules, fetch/build WASM assets |
+| `bun run dev:both`           | Start backend + frontend dev servers together |
+| `bun run dev:all`            | Start agent watchers + backend + frontend     |
 | `bun run dev`                | Backend only with file watching (`--watch`)   |
 | `bun run start`              | Start backend without watch                   |
 | `bun test`                   | Run tests with Bun test runner                |
@@ -67,16 +74,16 @@ Each workspace has its own `package.json`. The root `prepare` script handles bui
 | Variable        | Default                             | Description                                       |
 | --------------- | ----------------------------------- | ------------------------------------------------- |
 | `FRIDA_VERSION` | `17`                                | Frida version to use (`16` or `17`)               |
-| `HOST`          | `localhost` (prod) / hostname (dev) | Server bind address                               |
+| `HOST`          | `127.0.0.1`                         | Server bind address                               |
 | `PORT`          | `31337`                             | Server port                                       |
-| `BACKEND_PORT`  | `31337`                             | Backend port (dev mode only)                      |
-| `WEB_PORT`      | `3000` (dev) / same as PORT (prod)  | Frontend port                                     |
+| `BACKEND_PORT`  | `31337`                             | Backend port when `NODE_ENV=development`          |
 | `FRIDA_TIMEOUT` | `1000`                              | Device discovery timeout (ms)                     |
 | `NODE_ENV`      | —                                   | `development` or `production`                     |
 | `SQLITE`        | —                                   | Set to `better-sqlite3` for Node.js compatibility |
 | `PROJECT_DIR`   | `.igf` in current working directory | Data directory (database, cache, logs)             |
+| `NO_OPEN`       | —                                   | Set to `1` to avoid opening a browser on startup   |
 
-CLI arguments (`--frida`, `--host`, `--port`, `--project`) take precedence over environment variables.
+CLI arguments (`--frida`, `--host`, `--port`, `--project`) take precedence over their matching environment variables. `BACKEND_PORT` is a development-mode override.
 
 ## Build Targets
 
@@ -101,8 +108,8 @@ Outputs to `build/Release/`:
 
 The build process:
 
-1. Compiles agent and GUI
-2. Creates `assets.tgz` (GUI dist, agent dist, Drizzle migrations)
+1. Fetches the radare2 WASM asset
+2. Creates `assets.tgz` from existing `gui/dist`, `agent/dist`, Drizzle migrations, and skills
 3. Prebuilds native Frida modules for each target
 4. Produces standalone binaries via `bun build --compile`
 
@@ -114,7 +121,7 @@ bun run build:npm
 npm pack
 ```
 
-Bundles with `tsdown`, uses `better-sqlite3` for Node.js compatibility. The package includes a `bin/igf` entry point.
+Bundles with `tsdown`, uses `better-sqlite3` for Node.js compatibility, and exposes the `igf` binary from `dist/bin.mjs`.
 
 ## Testing
 
@@ -141,11 +148,13 @@ Coverage output goes to `coverage/lcov.info`.
 
 ## Development Tips
 
-- The dev server (`bun run dev:all`) starts the backend on port 31337 and the Vite frontend on port 3000. The frontend proxies `/api` and `/socket.io/` to the backend.
+- `bun run dev:both` starts the backend on port 31337 and the Vite frontend on Vite's printed local URL. The frontend proxies `/api`, `/socket.io/`, and `/radare2.wasm` to the backend.
 - When working on the agent only, use `bun run watch:fruity` or `bun run watch:droid` for live rebuilds.
 - Agent RPC can be tested directly with Frida CLI:
   ```bash
-  frida -U -F -l agent/src/fruity/index.ts \
+  cd agent
+  bun run build:fruity
+  frida -U -F -l dist/fruity.js \
     -e 'rpc.exports.invoke("info", "processInfo", [])' -q
   ```
 - Data (logs, database, cache) is stored in `.igf/` under the current working directory by default. Use `--project <path>` or the `PROJECT_DIR` environment variable to override.

@@ -109,13 +109,19 @@ Types flow end-to-end: `RemoteRPC<T>` converts synchronous module methods to asy
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `ready` | `(pid: number)` | Session initialized, agent loaded |
+| `denied` | `()` | Session attach denied by access rules |
 | `log` | `(level: string, text: string)` | Agent log output |
 | `syslog` | `(text: string)` | System log entry |
 | `hook` | `(msg: BaseHookMessage)` | Hook interception event |
 | `crypto` | `(msg: BaseHookMessage, data?: ArrayBuffer)` | Crypto API call captured |
 | `nsurl` | `(event: NSURLEvent)` | Network request event (iOS) |
+| `droidHttp` | `(event: HttpEvent)` | HTTP/WebSocket request event (Android) |
 | `jni` | `(event: JNIEvent)` | JNI call event (Android) |
 | `flutter` | `(event: Record<string, unknown>)` | Flutter method channel event |
+| `xpc` | `(event: XPCSocketEvent)` | XPC/NSXPC message event (iOS) |
+| `hermes` | `(event: { url, hash, size })` | Hermes bytecode capture event |
+| `privacy` | `(msg: PrivacyMessage)` | Sensitive API access event |
+| `memoryScan` | `(event: MemoryScanEvent, data?: ArrayBuffer)` | Memory scan progress/result event |
 | `lifecycle` | `(event: string)` | App lifecycle change (active/inactive/foreground/background) |
 | `detached` | `(reason: string)` | Session disconnected |
 | `fatal` | `(detail: unknown)` | Fatal error |
@@ -167,6 +173,9 @@ All endpoints are prefixed with `/api`.
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/download/:device/:pid?path=...` | Download file from device |
+| `HEAD` / `GET` | `/dump/:device/:pid?path=...` | Dump a decrypted app binary from device |
+| `GET` | `/resource/:device/:pid?type=...&name=...` | Download Android resource |
+| `GET` | `/apk-entry/:device/:pid?apk=...&entry=...` | Download an APK zip entry |
 | `POST` | `/upload/:device/:pid` | Upload file to device |
 
 ### Data & History
@@ -185,17 +194,35 @@ All endpoints are prefixed with `/api`.
 | `DELETE` | `/history/flutter/:device/:identifier` | Clear Flutter logs |
 | `GET` | `/history/nsurl/:device/:identifier` | Query network request logs |
 | `DELETE` | `/history/nsurl/:device/:identifier` | Clear network request logs |
+| `GET` | `/history/nsurl/:device/:identifier/har` | Export iOS network logs as HAR |
 | `GET` | `/history/nsurl/:device/:identifier/attachment/:requestId` | Download request body |
+| `GET` | `/history/http/:device/:identifier` | Query Android HTTP/WebSocket logs |
+| `DELETE` | `/history/http/:device/:identifier` | Clear Android HTTP/WebSocket logs |
+| `GET` | `/history/http/:device/:identifier/har` | Export Android HTTP logs as HAR |
+| `GET` | `/history/http/:device/:identifier/attachment/:requestId` | Download Android request/response body |
+| `GET` | `/history/xpc/:device/:identifier` | Query XPC/NSXPC logs |
+| `DELETE` | `/history/xpc/:device/:identifier` | Clear XPC/NSXPC logs |
+| `GET` | `/history/privacy/:device/:identifier` | Query privacy API access logs |
+| `DELETE` | `/history/privacy/:device/:identifier` | Clear privacy API access logs |
+| `GET` | `/hermes/:device/:identifier` | Query captured Hermes bytecode blobs |
+| `GET` | `/hermes/:device/:identifier/download/:id` | Download captured Hermes bytecode |
+| `GET` | `/hermes/:device/:identifier/analyze/:id` | Analyze Hermes bytecode metadata |
+| `GET` | `/hermes/:device/:identifier/decompile/:id` | Decompile Hermes bytecode |
+| `GET` | `/hermes/:device/:identifier/disassemble/:id` | Disassemble Hermes bytecode |
+| `GET` | `/hermes/:device/:identifier/xrefs/:id` | Query Hermes xrefs |
+| `DELETE` | `/hermes/:device/:identifier/:id` | Delete one Hermes capture |
+| `DELETE` | `/hermes/:device/:identifier` | Clear Hermes captures |
 | `GET` | `/pins/:device/:identifier` | Load pin snapshot |
 | `DELETE` | `/pins/:device/:identifier` | Clear pin snapshot |
 
-Query parameters for history endpoints: `limit`, `offset`, `since`, `category` (hooks), `method` (JNI).
+Query parameters for history endpoints: `limit`, `offset`, `since`, `category` (hooks/privacy), `method` (JNI), `protocol` (XPC), and `severity` (privacy).
 
 ### LLM
 
 | Method | Path | Description |
 |--------|------|-------------|
 | `POST` | `/llm` | Send text to configured LLM, returns text response |
+| `POST` | `/llm/stream` | Send text to configured LLM, streams text response |
 
 See [LLM Setup](./llm.md) for configuration.
 

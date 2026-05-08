@@ -1,3 +1,5 @@
 # Frontend GUI for igf
 
-`npm run dev` to start vite. However, it is recommended to return to the parent directory and run `npm run dev:all` to start both frontend and backend API.
+Use `bun run dev` from this directory to start the Vite frontend.
+
+For normal development, run `bun run dev:both` from the repository root to start the backend and GUI together. Use `bun run dev:all` when you also want the Frida agent watchers.

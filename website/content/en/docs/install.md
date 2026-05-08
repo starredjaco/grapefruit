@@ -2,7 +2,7 @@
 
 ## npm (recommended)
 
-Install globally with npm. Requires Node.js 22+ or Bun 1.3.6+.
+Install globally with npm. Requires Node.js 22.18 or newer.
 
 ```
 npm install -g igf
@@ -13,6 +13,8 @@ Then run:
 ```
 igf
 ```
+
+Do not use `bunx igf`; the npm package is built for Node.js.
 
 ## Prebuilt Binary
 
