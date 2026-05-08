@@ -1,8 +1,7 @@
 import { parseArgs } from "node:util";
 import { schema } from "./lib/cli.ts";
 
-const cliCommands = ["version", "device", "log", "history", "agent", "setup"];
-const ctlCommands = ["daemon", "rpc", "session"];
+const ctlCommands = ["daemon", "rpc", "session", "setup"];
 
 function command(argv: string[]): string | undefined {
   const valueOpts = new Set([
@@ -56,11 +55,6 @@ Server Options:
 CLI Commands:
   rpc                    Attach/create a daemon session and call agent RPC
   session                Manage daemon-owned instrumentation sessions
-  version                Show Frida & IGF versions
-  device <subcommand>    Device management (list|apps|ps|info|kill)
-  log <subcommand>       Log management (hooks|crypto|syslog|agent|clear)
-  history <subcommand>   Query history data (http|nsurl|jni|flutter|xpc|privacy|hermes)
-  agent <namespace>      Agent RPC commands
   setup                  Install Claude Code skills (/igf, /audit)
 
 Run 'igf <command> --help' for command details.
@@ -72,8 +66,6 @@ const firstArg = command(process.argv.slice(2));
 
 if (firstArg && ctlCommands.includes(firstArg)) {
   import("./ctl.ts").then((m) => m.run(process.argv.slice(2)));
-} else if (firstArg && cliCommands.includes(firstArg)) {
-  import("./cli/commands.ts").then((m) => m.runCLI(process.argv.slice(2)));
 } else {
   import("./index.ts");
 }

@@ -184,6 +184,7 @@ Usage:
   igf session open [target]
   igf session close <id>
   igf daemon stop
+  igf setup [--global]
 
 Target:
   --device <id> --platform <ios|android> --bundle <id>
@@ -208,7 +209,7 @@ export async function run(argv: string[]) {
   const [cmd, ...args] = parsed.positionals;
   const values = parsed.values as Values;
 
-  if (values.help || !cmd) {
+  if (!cmd || (values.help && cmd !== "setup")) {
     help();
     process.exit(cmd ? 0 : 1);
   }
@@ -232,6 +233,11 @@ export async function run(argv: string[]) {
     case "session":
       await session(args, values);
       break;
+    case "setup": {
+      const { run: setup } = await import("./setup.ts");
+      await setup(argv.slice(argv.indexOf(cmd) + 1));
+      break;
+    }
     default:
       fail(`Unknown command: ${cmd}`);
   }
