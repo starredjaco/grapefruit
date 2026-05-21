@@ -21,6 +21,14 @@ const R2_SHA256 =
 const WASM_URL = `https://github.com/radareorg/radare2/releases/download/${R2_VERSION}/radare2-${R2_VERSION}-wasi-api.zip`;
 const OUTPUT = "radare2.wasm";
 
+function tool(name: string) {
+  const resolved =
+    Bun.which(process.platform === "win32" ? `${name}.exe` : name) ??
+    Bun.which(name);
+  if (resolved) return resolved;
+  throw new Error(`Unable to find ${name} on PATH`);
+}
+
 async function main() {
   if (existsSync(OUTPUT)) {
     console.log(`[r2-wasm] ${OUTPUT} already exists, verifying...`);
@@ -38,7 +46,8 @@ async function main() {
   const zipPath = `radare2-wasi-${R2_VERSION}.zip`;
 
   const res = await fetch(WASM_URL);
-  if (!res.ok) throw new Error(`[r2-wasm] download failed: ${res.status} ${res.statusText}`);
+  if (!res.ok)
+    throw new Error(`[r2-wasm] download failed: ${res.status} ${res.statusText}`);
   await Bun.write(zipPath, res);
 
   const innerDir = `radare2-${R2_VERSION}-wasi-api`;
@@ -46,9 +55,9 @@ async function main() {
   const tmpDir = "radare2-wasi-tmp";
 
   if (isWin) {
-    await Bun.$`powershell -Command Expand-Archive -Force ${zipPath} -DestinationPath ${tmpDir}`;
+    await Bun.$`${tool("powershell")} -NoProfile -Command Expand-Archive -Force ${zipPath} -DestinationPath ${tmpDir}`;
   } else {
-    await Bun.$`unzip -o ${zipPath} ${zipEntry} -d ${tmpDir}`;
+    await Bun.$`${tool("unzip")} -o ${zipPath} ${zipEntry} -d ${tmpDir}`;
   }
 
   await rename(join(tmpDir, innerDir, "radare2.wasm"), OUTPUT);

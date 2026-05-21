@@ -212,7 +212,7 @@ export function FilesTab({ params }: IDockviewPanelProps<FilesTabParams>) {
         params: { path: fullPath, writable: cwdWritable },
       });
     },
-    [fullCwd, openSingletonPanel],
+    [cwdWritable, fullCwd, openSingletonPanel],
   );
 
   const handleRename = useCallback(

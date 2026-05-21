@@ -91,7 +91,7 @@ export function HexPreviewTab({
     if (selectedOffset < 0 || !cache) return null;
     // Try to get 8 bytes from the selected offset
     return cache.get(selectedOffset, 8);
-  }, [cache, selectedOffset, cacheVersion]);
+  }, [cache, selectedOffset]);
 
   const download = useCallback(() => {
     const url = `/api/download/${device}/${pid}?path=${encodeURIComponent(fullPath)}`;

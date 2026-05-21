@@ -40,6 +40,14 @@ const url = `${BASE}/${archive}`;
 const dest = resolve(process.env.WASI_SDK_PATH ?? join(homedir(), ".wasi-sdk"));
 const clang = process.platform === "win32" ? "clang.exe" : "clang";
 
+function tool(name: string) {
+  const resolved =
+    Bun.which(process.platform === "win32" ? `${name}.exe` : name) ??
+    Bun.which(name);
+  if (resolved) return resolved;
+  throw new Error(`Unable to find ${name} on PATH`);
+}
+
 if (
   await access(join(dest, "bin", clang)).then(
     () => true,
@@ -59,7 +67,7 @@ const tmp = join(tmpdir(), archive);
 await writeFile(tmp, Buffer.from(await res.arrayBuffer()));
 
 await mkdir(dest, { recursive: true });
-await Bun.$`tar xzf ${tmp} -C ${dest} --strip-components=1`;
+await Bun.$`${tool("tar")} xzf ${tmp} -C ${dest} --strip-components=1`;
 await unlink(tmp);
 
 console.log(`installed wasi-sdk ${VERSION} to ${dest}`);

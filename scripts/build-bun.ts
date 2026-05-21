@@ -17,14 +17,22 @@ const bunTargets: Record<string, [string, string]> = {
 
 const root = path.join(import.meta.dirname, "..");
 
+function tool(name: string) {
+  const resolved =
+    Bun.which(process.platform === "win32" ? `${name}.exe` : name) ??
+    Bun.which(name);
+  if (resolved) return resolved;
+  throw new Error(`Unable to find ${name} on PATH`);
+}
+
 async function prebuild(
   cwd: string,
   platform: string = process.platform,
   arch: string = process.arch,
 ) {
   console.log("prebuild", cwd, "for", platform, arch);
-  const binary = path.join(root, "node_modules", ".bin", "prebuild-install");
-  await $`${process.execPath} ${binary} -r napi --arch ${arch} --platform ${platform}`.cwd(
+  const prebuild = path.join(root, "node_modules", "prebuild-install", "bin.js");
+  await $`${tool("node")} ${prebuild} -r napi --arch ${arch} --platform ${platform}`.cwd(
     cwd,
   );
 }
@@ -42,6 +50,10 @@ async function bunBuild(target?: string) {
   await $`${process.execPath} build ${targetArgs} ${path.join(root, "src", "bin.ts")} ${path.join(root, "assets.tgz")} --compile --outfile ${path.join(root, "build", "Release", name)}`;
 }
 
+async function assets() {
+  await $`${tool("tar")} cvf ${path.join(root, "assets.tgz")} -C ${root} gui/dist agent/dist drizzle skills`;
+}
+
 async function main() {
   console.warn("this script is experimental and not well tested");
 
@@ -53,8 +65,8 @@ async function main() {
     process.exit(1);
   }
 
-  await $`bun scripts/fetch-r2-wasm.ts`;
-  await $`tar cvf assets.tgz gui/dist agent/dist drizzle skills`;
+  await $`${process.execPath} ${path.join(root, "scripts", "fetch-r2-wasm.ts")}`;
+  await assets();
 
   if (cross) {
     for (const [target, [platform, arch]] of Object.entries(bunTargets)) {

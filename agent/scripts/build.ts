@@ -5,7 +5,7 @@ import { styleText } from "node:util";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-await $`bun run type`;
+await $`${process.execPath} run type`;
 
 async function buildBridges() {
   const list = ["java", "objc", "swift"] as const;
@@ -49,7 +49,7 @@ const metadata = await import("../package.json", { with: { type: "json" } });
 await Promise.all(
   Object.keys(metadata.scripts)
     .filter((name) => name.startsWith("build:"))
-    .map((name) => $`bun run ${name}`),
+    .map((name) => $`${process.execPath} run ${name}`),
 );
 
 console.log(styleText("green", "all build tasks finished"));

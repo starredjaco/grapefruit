@@ -109,6 +109,14 @@ export function TextEditorTab({
 
   const fs = (platform === Platform.Droid ? droid?.fs : fruity?.fs) ?? null;
 
+  const save = useCallback(async () => {
+    if (!fs || !writable) return;
+    const text = editorRef.current?.getValue() ?? "";
+    await fs.saveText(fullPath, text);
+    savedContentRef.current = text;
+    setDirty(false);
+  }, [fs, writable, fullPath]);
+
   const onMount: OnMount = useCallback(
     (ed, monaco) => {
       editorRef.current = ed;
@@ -124,20 +132,12 @@ export function TextEditorTab({
         });
       }
     },
-    [writable],
+    [save, writable],
   );
 
   const run = useCallback((id: string) => {
     editorRef.current?.getAction(id)?.run();
   }, []);
-
-  const save = useCallback(async () => {
-    if (!fs || !writable) return;
-    const text = editorRef.current?.getValue() ?? "";
-    await fs.saveText(fullPath, text);
-    savedContentRef.current = text;
-    setDirty(false);
-  }, [fs, writable, fullPath]);
 
   const download = useCallback(() => {
     const text = editorRef.current?.getValue() ?? content ?? "";

@@ -91,7 +91,10 @@ function inspect(bytes: Uint8Array | null): Row[] {
   // UTF-8 decode
   try {
     const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes.slice(0, 16));
-    const display = text.replace(/[\x00-\x1f\x7f-\x9f]/g, "·");
+    const display = Array.from(text, (ch) => {
+      const code = ch.charCodeAt(0);
+      return code <= 0x1f || (code >= 0x7f && code <= 0x9f) ? "·" : ch;
+    }).join("");
     rows.push({ label: "UTF-8", le: display });
   } catch {
     rows.push({ label: "UTF-8", le: "(invalid)" });
