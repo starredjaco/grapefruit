@@ -154,32 +154,7 @@ Rather than shipping brittle built-in bypasses, Grapefruit focuses on instrument
 
 Grapefruit binds to `127.0.0.1` by default and has **no built-in authentication**. The web UI and API are accessible to any local process. While cross-origin requests are blocked by default (no CORS headers, Socket.IO rejects cross-origin connections), this alone is not sufficient for a shared or remote environment.
 
-**If you need remote access or multi-user security**, put Grapefruit behind a reverse proxy such as [Caddy](https://caddyserver.com):
-
-```
-# Caddyfile — basic auth
-grapefruit.example.com {
-    basicauth * {
-        analyst $2a$14$... # caddy hash-password
-    }
-    reverse_proxy 127.0.0.1:31337
-}
-```
-
-```
-# Caddyfile — mutual TLS (client certificates)
-grapefruit.example.com {
-    tls {
-        client_auth {
-            mode require_and_verify
-            trust_pool file /path/to/ca.crt
-        }
-    }
-    reverse_proxy 127.0.0.1:31337
-}
-```
-
-This gives you TLS, authentication, and access logging with minimal configuration. **Do not expose Grapefruit directly to the network without authentication.**
+**If you need remote access or multi-user security**, put Grapefruit behind an authenticated reverse proxy such as [Caddy](https://caddyserver.com) for TLS, access control, and logging. **Do not expose Grapefruit directly to the network without authentication.**
 
 ## License
 
