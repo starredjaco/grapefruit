@@ -47,7 +47,7 @@
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.8.0",
     "drizzle-orm": "^0.45.1",
-    "frida": "^17.8.2",
+    "frida": "17.9.10",
     "frida-remote-stream": "^6.0.3",
     "frida16": "npm:frida@^16.7.19",
     "hono": "^4.12.8",
@@ -64,7 +64,7 @@
   },
   "patchedDependencies": {
     "frida@16.7.19": "patches/frida@16.7.19.patch",
-    "frida@17.9.0": "patches/frida@17.9.0.patch"
+    "frida@17.9.10": "patches/frida@17.9.10.patch"
   },
   "trustedDependencies": [
     "better-sqlite3",

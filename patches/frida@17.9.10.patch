@@ -1,5 +1,5 @@
 diff --git a/build/src/frida.js b/build/src/frida.js
-index 7eebcaf985d7725e8e655674d963114bdd56f7dd..aa2323aa4cc0a1a8b18a7818bb1dd22a81281bab 100644
+index f7eb09aa84a76c63df9cd65b491e2cf58a10e72d..5f6bc4003b31635d0236fc7fa8f45e1fbc108b6c 100644
 --- a/build/src/frida.js
 +++ b/build/src/frida.js
 @@ -1,15 +1,8 @@
