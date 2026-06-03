@@ -51,7 +51,7 @@ const bunSEA =
 
 const test = process.env.NODE_ENV === "test";
 const noOpen =
-  argv["no-open"] === true || process.env.NO_OPEN === "1" || test;
+  argv["no-open"] === true || process.env.NO_OPEN === "1" || test || dev;
 
 export default {
   bunSEA,
