@@ -23,14 +23,17 @@ function NavItem({ to, icon, label }: NavItemProps) {
   return (
     <NavLink
       to={to}
+      aria-label={label}
       className={({ isActive }) =>
-        `p-2 flex items-center justify-center hover:bg-sidebar-accent transition-colors ${
-          isActive ? "bg-sidebar-accent border-l-2 border-primary" : ""
+        `mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sidebar-foreground/70 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring/50 ${
+          isActive ? "bg-sidebar-accent text-sidebar-foreground ring-1 ring-sidebar-border" : ""
         }`
       }
     >
       <Tooltip>
-        <TooltipTrigger>{icon}</TooltipTrigger>
+        <TooltipTrigger render={<span className="flex items-center justify-center" />}>
+          {icon}
+        </TooltipTrigger>
         <TooltipContent side="right">{label}</TooltipContent>
       </Tooltip>
     </NavLink>
@@ -45,18 +48,19 @@ interface ActionNavItemProps {
 
 function ActionNavItem({ icon, label, onClick }: ActionNavItemProps) {
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
+      aria-label={label}
       onClick={onClick}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
-      className="p-2 flex items-center justify-center hover:bg-sidebar-accent transition-colors cursor-pointer"
+      className="mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sidebar-foreground/70 outline-none hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <Tooltip>
-        <TooltipTrigger>{icon}</TooltipTrigger>
+        <TooltipTrigger render={<span className="flex items-center justify-center" />}>
+          {icon}
+        </TooltipTrigger>
         <TooltipContent side="right">{label}</TooltipContent>
       </Tooltip>
-    </div>
+    </button>
   );
 }
 
@@ -84,15 +88,19 @@ export function LeftPanelView() {
 
   return (
     <div className="flex h-full">
-      <div className="w-16 bg-sidebar border-r border-sidebar-border flex flex-col">
-        <div className="p-2 flex items-center justify-center border-b border-sidebar-border">
-          <Link to={`/list/${device}/apps`} className="flex items-center">
+      <div className="native-chrome flex w-14 flex-col border-r border-sidebar-border bg-sidebar">
+        <div className="flex h-12 items-center justify-center border-b border-sidebar-border">
+          <Link
+            to={`/list/${device}/apps`}
+            aria-label={t("apps")}
+            className="flex h-9 w-9 items-center justify-center rounded-md outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
             <img src={logo} alt={t("logo_alt")} className="h-6 w-6" />
           </Link>
         </div>
 
         {navItems.length > 0 ? (
-          <div className="flex-1 flex flex-col gap-1 pt-2">
+          <div className="flex flex-1 flex-col gap-1 pt-2">
             {navItems.map((item) =>
               item.kind === "route" ? (
                 <NavItem
@@ -116,7 +124,7 @@ export function LeftPanelView() {
         )}
 
         {/* Settings at bottom */}
-        <div className="flex flex-col gap-1 py-2 items-center">
+        <div className="flex flex-col items-center gap-1 py-2">
           <LanguageSelector />
           <DarkmodeToggle />
         </div>

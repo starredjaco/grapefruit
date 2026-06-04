@@ -320,7 +320,7 @@ function WorkspaceContent() {
   return (
     <R2Provider storageKey={r2StorageKey}>
     <DockContext.Provider value={dockContextValue}>
-      <div className="flex h-screen flex-col">
+      <div className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
         <ResizablePanelGroup
           orientation="horizontal"
           className="h-full"

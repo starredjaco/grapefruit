@@ -51,7 +51,7 @@ function AppCard({ app, udid, platform }: AppCardProps) {
   return (
     <Link
       to={`/workspace/${platform}/${udid}/app/${app.identifier}`}
-      className="block rounded-lg p-6 transition-colors hover:bg-accent dark:hover:bg-accent max-w-40 mx-auto"
+      className="block max-w-40 cursor-default select-none rounded-lg p-6 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <div className="relative mb-3 flex items-center justify-center">
         <img
@@ -173,10 +173,10 @@ export function AppsView() {
 
   return (
     <div className="p-6">
-      <div className="sticky top-0 z-10 bg-background py-4 flex items-center gap-2">
+      <div className="native-chrome sticky top-0 z-10 -mx-6 -mt-6 flex items-center gap-2 border-b border-border bg-background px-6 py-3">
         {deviceInfo && (
           <div className="min-w-0 shrink-0">
-            <h1 className="text-sm font-bold dark:text-foreground leading-tight">
+            <h1 className="text-sm font-semibold leading-tight dark:text-foreground">
               {deviceInfo.name || t("device")}
             </h1>
             <p className="text-xs text-muted-foreground truncate">
@@ -184,11 +184,11 @@ export function AppsView() {
             </p>
           </div>
         )}
-        <div className="flex mx-auto border rounded-md overflow-hidden">
-          <Button variant="default" size="sm" className="rounded-none border-0">
+        <div className="mx-auto flex overflow-hidden rounded-md border bg-background">
+          <Button variant="default" size="sm" className="rounded-none border-0 shadow-none">
             {t("apps")}
           </Button>
-          <Button variant="ghost" size="sm" className="rounded-none border-0" nativeButton={false} render={<Link to={`/list/${udid}/processes`} />}>
+          <Button variant="ghost" size="sm" className="rounded-none border-0 shadow-none" nativeButton={false} render={<Link to={`/list/${udid}/processes`} />}>
             {t("processes")}
           </Button>
         </div>

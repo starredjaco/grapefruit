@@ -144,13 +144,19 @@ export function ProcessesView() {
 
   const SortableHead = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
     <TableHead
-      className="cursor-pointer hover:bg-muted/50 select-none"
-      onClick={() => handleSort(field)}
+      aria-sort={
+        sort.field !== field ? "none" : sort.direction === "asc" ? "ascending" : "descending"
+      }
+      className="select-none p-0"
     >
-      <div className="flex items-center gap-1">
+      <button
+        type="button"
+        onClick={() => handleSort(field)}
+        className="flex h-10 w-full items-center gap-1 px-2 text-left outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
         {children}
         <ArrowUpDown className={`h-3 w-3 ${sort.field === field ? "text-amber-500" : "text-muted-foreground"}`} />
-      </div>
+      </button>
     </TableHead>
   );
 
@@ -186,10 +192,10 @@ export function ProcessesView() {
 
   return (
     <div className="p-6">
-      <div className="sticky top-0 z-10 bg-background py-4 flex items-center gap-2">
+      <div className="native-chrome sticky top-0 z-10 -mx-6 -mt-6 flex items-center gap-2 border-b border-border bg-background px-6 py-3">
         {deviceInfo && (
           <div className="min-w-0 shrink-0">
-            <h1 className="text-sm font-bold dark:text-foreground leading-tight">
+            <h1 className="text-sm font-semibold leading-tight dark:text-foreground">
               {deviceInfo.name || t("device")}
             </h1>
             <p className="text-xs text-muted-foreground truncate">
@@ -197,11 +203,11 @@ export function ProcessesView() {
             </p>
           </div>
         )}
-        <div className="flex mx-auto border rounded-md overflow-hidden">
-          <Button variant="ghost" size="sm" className="rounded-none border-0" nativeButton={false} render={<Link to={`/list/${udid}/apps`} />}>
+        <div className="mx-auto flex overflow-hidden rounded-md border bg-background">
+          <Button variant="ghost" size="sm" className="rounded-none border-0 shadow-none" nativeButton={false} render={<Link to={`/list/${udid}/apps`} />}>
             {t("apps")}
           </Button>
-          <Button variant="default" size="sm" className="rounded-none border-0">
+          <Button variant="default" size="sm" className="rounded-none border-0 shadow-none">
             {t("processes")}
           </Button>
         </div>
@@ -222,7 +228,7 @@ export function ProcessesView() {
           {searchQuery ? t("no_processes_matching_search") : t("no_processes_found")}
         </p>
       ) : (
-        <div className="rounded-md border">
+        <div className="mt-4 rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -235,7 +241,7 @@ export function ProcessesView() {
             </TableHeader>
             <TableBody>
               {filteredAndSortedProcesses.map((process) => (
-                <TableRow key={process.pid} className="cursor-pointer">
+                <TableRow key={process.pid}>
                   <TableCell>
                     <Link
                       to={`/workspace/${platform}/${udid}/daemon/${process.pid}?name=${encodeURIComponent(process.name)}`}

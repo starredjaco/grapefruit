@@ -13,9 +13,13 @@ export function WelcomePage() {
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden sm:flex-row">
-      <div className="flex w-full flex-col border-b border-border bg-sidebar sm:h-full sm:w-64 sm:border-b-0 sm:border-r">
-        <div className="flex items-center justify-center px-4 py-5">
-          <Link to="/">
+      <div className="native-chrome flex w-full flex-col border-b border-border bg-sidebar sm:h-full sm:w-64 sm:border-b-0 sm:border-r">
+        <div className="flex h-16 items-center justify-center border-b border-sidebar-border px-4">
+          <Link
+            to="/"
+            aria-label={t("logo_alt")}
+            className="rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
             <img src={logo} alt={t("logo_alt")} className="h-10 w-40" />
           </Link>
         </div>
@@ -36,14 +40,14 @@ export function WelcomePage() {
           <div className="flex flex-col gap-0.5">
             <Link
               to="/decompiler/hermes"
-              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <SiReact className="h-4 w-4 shrink-0" />
               {t("decompiler_hermes")}
             </Link>
             <Link
               to="/decompiler/radare2"
-              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <Binary className="h-4 w-4 shrink-0" />
               {t("decompiler_r2")}

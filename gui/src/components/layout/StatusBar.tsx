@@ -39,28 +39,32 @@ export function StatusBar({
   const { t } = useTranslation();
   const { status, device, pid } = useSession();
   const navigate = useNavigate();
+  const shortcut =
+    typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.platform)
+      ? "K"
+      : "Ctrl K";
 
-  const getStatusColor = () => {
+  const getStatusClass = () => {
     switch (status) {
       case Status.Ready:
-        return "bg-green-600 dark:bg-green-900";
+        return "text-emerald-600 dark:text-emerald-400";
       case Status.Disconnected:
-        return "bg-orange-500 dark:bg-orange-900";
+        return "text-orange-600 dark:text-orange-400";
       case Status.Connecting:
       default:
-        return "bg-muted text-muted-foreground";
+        return "text-muted-foreground";
     }
   };
 
   const getStatusIcon = () => {
     switch (status) {
       case Status.Ready:
-        return <Circle className="w-3 h-3 fill-current" />;
+        return <Circle className="h-2.5 w-2.5 fill-current" />;
       case Status.Disconnected:
-        return <CircleAlert className="w-3 h-3" />;
+        return <CircleAlert className="h-3.5 w-3.5" />;
       case Status.Connecting:
       default:
-        return <Loader2 className="w-3 h-3 animate-spin" />;
+        return <Loader2 className="h-3.5 w-3.5 animate-spin" />;
     }
   };
 
@@ -93,7 +97,7 @@ export function StatusBar({
 
   return (
     <footer
-      className={`${getStatusColor()} px-4 py-1 text-xs text-white flex items-center justify-between`}
+      className="native-chrome flex h-6 items-center justify-between border-t border-border bg-background px-2 text-[11px] text-muted-foreground"
     >
       <div className="flex items-center gap-1">
         <DropdownMenu>
@@ -101,11 +105,11 @@ export function StatusBar({
             render={
               <button
                 type="button"
-                className="hover:bg-white/20 px-1 py-0.5 rounded transition-colors cursor-pointer flex items-center gap-1.5"
+                className="flex h-5 items-center gap-1.5 rounded px-1 text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
               />
             }
           >
-            {getStatusIcon()}
+            <span className={getStatusClass()}>{getStatusIcon()}</span>
             {status === Status.Ready && t("connected")}
             {status === Status.Connecting && t("connecting")}
             {status === Status.Disconnected && t("disconnected")}
@@ -132,7 +136,7 @@ export function StatusBar({
           <button
             type="button"
             onClick={handleReloadPage}
-            className="hover:bg-white/20 px-1 py-0.5 rounded transition-colors flex items-center gap-1"
+            className="flex h-5 items-center gap-1 rounded px-1 text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <RefreshCw className="w-3 h-3" />
             {t("reload")}
@@ -143,15 +147,16 @@ export function StatusBar({
         <button
           type="button"
           onClick={onOpenCommandPalette}
-          className="px-1.5 py-0.5 hover:bg-white/20 rounded transition-colors flex items-center gap-0.5"
+          className="flex h-5 items-center gap-1 rounded px-1.5 outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
           title={t("command_palette")}
         >
-          <Command className="w-3 h-3" />K
+          <Command className="w-3 h-3" />
+          {shortcut}
         </button>
         <button
           type="button"
           onClick={onResetLayout}
-          className="px-1.5 py-0.5 hover:bg-white/20 rounded transition-colors flex items-center gap-1"
+          className="flex h-5 items-center gap-1 rounded px-1.5 outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
           title={t("reset_workspace")}
         >
           <RotateCcw className="w-3 h-3" />
@@ -160,7 +165,7 @@ export function StatusBar({
         <button
           type="button"
           onClick={() => setBottomPanelVisible(!bottomPanelVisible)}
-          className="p-0.5 hover:bg-white/20 rounded transition-colors"
+          className="flex h-5 w-5 items-center justify-center rounded outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
           title={bottomPanelVisible ? t("hide_panel") : t("show_panel")}
         >
           {bottomPanelVisible ? (
