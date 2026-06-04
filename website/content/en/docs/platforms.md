@@ -27,6 +27,15 @@ Analyze binary security flags for all user-installed modules:
 - **PAC** (Pointer Authentication Code, arm64)
 - **Secure Malloc** (secure allocator usage)
 
+### Runtime Security Config
+
+Query the kernel's active security flags for the current process (macOS/iOS 26+):
+- **Hardened Heap** — security-critical memory allocator settings
+- **TPRO** — Trusted Path Read-Only
+- **MTE** — Memory Tagging Extension (ARM)
+- **Script Restrictions** — script execution restrictions
+- **Guard Objects** — Guard Objects protection
+
 ### Info.plist & Insights
 
 ![Insights](/insights.webp)

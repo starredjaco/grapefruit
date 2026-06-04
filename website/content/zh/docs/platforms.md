@@ -16,6 +16,15 @@
 
 检查二进制安全标志：PIE、ARC、栈保护器、代码签名和受限权限。
 
+### 运行时安全配置
+
+查询内核的当前进程安全标志（macOS/iOS 26+）：
+- **Hardened Heap** — 内存分配器安全设置
+- **TPRO** — 可信路径只读
+- **MTE** — 内存标记扩展 (ARM)
+- **Script Restrictions** — 脚本执行限制
+- **Guard Objects** — Guard Objects 保护
+
 ### Info.plist 与 Insights
 
 ![Insights](/insights.webp)

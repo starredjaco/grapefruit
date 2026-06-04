@@ -1,5 +1,6 @@
 import checksec, { type MachOResult } from "./macho.js";
 
+export { securityConfig, type SecurityConfig } from "./secconfig.js";
 export type MachOModuleResult = MachOResult & { name: string; path: string };
 
 export function all(): MachOModuleResult[] {

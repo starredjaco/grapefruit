@@ -18,6 +18,7 @@ import { useFruityQuery, useDroidQuery } from "@/lib/queries";
 
 import type { ELFResult, ELFCFI } from "@agent/droid/modules/checksec/elf";
 import type { MachOResult } from "@agent/fruity/modules/checksec/macho";
+import type { SecurityConfig } from "@agent/fruity/modules/checksec/secconfig";
 
 type ELFRow = ELFResult & { name: string; path: string };
 type MachORow = MachOResult & { name: string; path: string };
@@ -394,6 +395,87 @@ function EncryptionBadge({ value }: { value: boolean | string }) {
   );
 }
 
+// -- Runtime Security Config Panel (macOS/iOS 26+) --
+
+const SECURITY_CONFIG_FLAGS: {
+  key: keyof Omit<SecurityConfig, "raw">;
+  label: string;
+  desc: string;
+}[] = [
+  {
+    key: "hardenedHeap",
+    label: "Hardened Heap",
+    desc: "Security-critical settings for system memory allocator",
+  },
+  {
+    key: "tpro",
+    label: "TPRO",
+    desc: "Trusted Path Read-Only",
+  },
+  {
+    key: "mte",
+    label: "MTE",
+    desc: "Memory Tagging Extension (ARM)",
+  },
+  {
+    key: "scriptRestrictions",
+    label: "Script Restrictions",
+    desc: "Script execution restrictions",
+  },
+  {
+    key: "guardObjects",
+    label: "Guard Objects",
+    desc: "Guard Objects protection",
+  },
+];
+
+function RuntimeSecurityPanel({ data }: { data: SecurityConfig }) {
+  const hasAny = SECURITY_CONFIG_FLAGS.some((f) => data[f.key]);
+
+  return (
+    <div>
+      <h3 className="text-sm font-medium mb-2 flex items-center gap-1.5">
+        <ShieldCheck className="h-4 w-4" />
+        Runtime Security Config
+        <span className="text-xs text-muted-foreground font-normal ml-1">
+          (macOS/iOS 26+)
+        </span>
+      </h3>
+      {!hasAny ? (
+        <div className="text-sm text-muted-foreground">
+          No runtime security flags active for this process.
+        </div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Flag</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Description</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {SECURITY_CONFIG_FLAGS.filter((f) => data[f.key]).map((f) => (
+              <TableRow key={f.key}>
+                <TableCell className="font-mono text-xs">{f.label}</TableCell>
+                <TableCell>
+                  <SecureBadge secure={true} label="Active" />
+                </TableCell>
+                <TableCell className="text-xs text-muted-foreground max-w-80">
+                  {f.desc}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+      <div className="text-xs text-muted-foreground mt-2">
+        Raw value: <code className="font-mono">{data.raw}</code>
+      </div>
+    </div>
+  );
+}
+
 // -- Entitlements Panel --
 
 function EntitlementsPanel({ data }: { data: EntitlementsPlistResult }) {
@@ -504,6 +586,12 @@ export function ChecksecTab() {
     { enabled: isFruity },
   );
 
+  const securityConfigResult = useFruityQuery(
+    ["checksec", "securityConfig"],
+    (api) => api.checksec.securityConfig(),
+    { enabled: isFruity },
+  );
+
   const { data, isLoading } = isFruity ? fruityResult : droidResult;
 
   const handleDownload = () => {
@@ -558,6 +646,13 @@ export function ChecksecTab() {
       </div>
 
       <div className="flex-1 overflow-auto">
+        {/* Runtime security config (Apple only, macOS/iOS 26+) */}
+        {isFruity && securityConfigResult.data && (
+          <div className="border-b p-4">
+            <RuntimeSecurityPanel data={securityConfigResult.data} />
+          </div>
+        )}
+
         {/* Entitlements section (Apple only) */}
         {isFruity && entitlementsResult.data && (
           <div className="border-b p-4">
